@@ -1,9 +1,8 @@
-# PLACEHOLDER — CIDRs to be confirmed by Gerson (Redes) in 3PM meeting
 prefix      = "kefe"
 project     = "data"
 environment = "qa"
 
-vpc_cidr = "10.92.0.0/20"  # PLACEHOLDER — Gerson confirms
+vpc_cidr = "10.92.0.0/20"
 
 azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
 
