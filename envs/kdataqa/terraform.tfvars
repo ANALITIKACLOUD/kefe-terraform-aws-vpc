@@ -1,5 +1,5 @@
 prefix      = "kefe"
-project     = "kcld"
+project     = "data"
 environment = "sx2"
 
 vpc_cidr = "10.92.0.0/20"
