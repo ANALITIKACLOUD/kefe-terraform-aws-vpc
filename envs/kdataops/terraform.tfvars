@@ -2,7 +2,7 @@ prefix      = "kefe"
 project     = "kcld"
 environment = "do"
 
-vpc_cidr = "10.200.0.0/20"
+vpc_cidr = "10.93.0.0/20"
 
 azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
 
