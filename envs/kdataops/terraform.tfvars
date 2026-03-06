@@ -1,6 +1,6 @@
 prefix      = "kefe"
 project     = "data"
-environment = "do"
+environment = "ops"
 
 vpc_cidr = "10.93.0.0/20"
 

@@ -1,6 +1,6 @@
 prefix      = "kefe"
 project     = "data"
-environment = "sx2"
+environment = "qa"
 
 vpc_cidr = "10.92.0.0/20"
 
