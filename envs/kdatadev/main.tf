@@ -4,6 +4,10 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+
+  assume_role {
+    role_arn = "arn:aws:iam::339713002785:role/kefe-dataops-deployer"
+  }
 }
 
 module "vpc" {
