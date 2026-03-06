@@ -8,13 +8,41 @@ Reusable VPC module following EFE PRD architecture: private subnets + TGW subnet
 
 ## OVERVIEW
 
-```
-VPC (/20)
-├── Private subnets (/24 x 3 AZs) — workloads
-├── TGW subnets (/28 x 3 AZs) — Transit Gateway attachments
-├── Route Table private — default 0.0.0.0/0 → TGW + on-prem routes
-├── Route Table TGW — local only
-└── S3 Gateway Endpoint (optional)
+```mermaid
+flowchart TB
+    subgraph VPC["VPC CIDR 20"]
+        subgraph AZa["AZ us-east-1a"]
+            PRIa("Private subnet CIDR 24")
+            TGWa("TGW subnet CIDR 28")
+        end
+        subgraph AZb["AZ us-east-1b"]
+            PRIb("Private subnet CIDR 24")
+            TGWb("TGW subnet CIDR 28")
+        end
+        subgraph AZc["AZ us-east-1c"]
+            PRIc("Private subnet CIDR 24")
+            TGWc("TGW subnet CIDR 28")
+        end
+        RTprivate["Route Table private"]
+        RTtgw["Route Table tgw"]
+        S3EP(["S3 Gateway Endpoint"])
+    end
+
+    TGW["Transit Gateway external"]
+    OnPrem["On-prem network"]
+
+    PRIa --> RTprivate
+    PRIb --> RTprivate
+    PRIc --> RTprivate
+    TGWa --> RTtgw
+    TGWb --> RTtgw
+    TGWc --> RTtgw
+    TGWa --> TGW
+    TGWb --> TGW
+    TGWc --> TGW
+    RTprivate --> S3EP
+    RTprivate -->|"default route + on-prem"| TGW
+    TGW --> OnPrem
 ```
 
 ## Usage

@@ -8,12 +8,12 @@ on:
         required: true
         type: choice
         options:
-          - kcld-do
-          - kcld-sx1
-          - kcld-sx2
-          - data-dev
-          - data-qa
-          - data-ops
+          - kdataops
+          - kdatadev
+          - kdataqa
+          - efe-dataops
+          - efe-datadev
+          - efe-dataqa
       action:
         description: 'Action to perform'
         required: true
