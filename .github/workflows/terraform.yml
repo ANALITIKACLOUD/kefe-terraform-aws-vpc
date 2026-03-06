@@ -1,0 +1,117 @@
+name: Terraform VPC
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - kcld-do
+          - kcld-sx1
+          - kcld-sx2
+          - data-dev
+          - data-qa
+          - data-ops
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_VERSION: "1.9.0"
+  AWS_REGION: "us-east-1"
+
+jobs:
+  plan:
+    name: "Plan (${{ inputs.environment }})"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (Plan)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-pipeline-plan
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        working-directory: envs/${{ inputs.environment }}
+        run: terraform init -backend-config=backend.hcl
+
+      - name: Terraform Plan
+        working-directory: envs/${{ inputs.environment }}
+        run: |
+          if [ "${{ inputs.action }}" = "destroy" ]; then
+            terraform plan -var-file=terraform.tfvars -destroy -no-color | tee plan-output.txt
+          else
+            terraform plan -var-file=terraform.tfvars -no-color | tee plan-output.txt
+          fi
+
+      - name: Post Plan Summary
+        if: always()
+        working-directory: envs/${{ inputs.environment }}
+        run: |
+          echo "## Terraform Plan - ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 plan-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  apply:
+    name: "Apply (${{ inputs.environment }})"
+    needs: plan
+    if: inputs.action != 'plan'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (Apply)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-pipeline-apply
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        working-directory: envs/${{ inputs.environment }}
+        run: terraform init -backend-config=backend.hcl
+
+      - name: Terraform Apply
+        working-directory: envs/${{ inputs.environment }}
+        run: |
+          if [ "${{ inputs.action }}" = "destroy" ]; then
+            terraform destroy -var-file=terraform.tfvars -auto-approve -no-color
+          else
+            terraform apply -var-file=terraform.tfvars -auto-approve -no-color
+          fi
+
+      - name: Post Apply Summary
+        if: always()
+        working-directory: envs/${{ inputs.environment }}
+        run: |
+          echo "## Terraform Apply - ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Action: ${{ inputs.action }}" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
