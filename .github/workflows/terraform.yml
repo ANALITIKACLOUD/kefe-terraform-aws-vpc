@@ -42,7 +42,7 @@ jobs:
       - name: Configure AWS credentials (Plan)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-pipeline-plan
+          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-role-pipeline-plan
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
@@ -86,7 +86,7 @@ jobs:
       - name: Configure AWS credentials (Apply)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-pipeline-apply
+          role-to-assume: arn:aws:iam::882705246437:role/kefe-dataops-role-pipeline-apply
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
