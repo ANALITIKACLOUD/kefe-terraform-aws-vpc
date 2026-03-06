@@ -21,5 +21,6 @@ onprem_routes = [
 enable_s3_endpoint = true
 
 tags = {
-  Account = "585853725481"
+  Account  = "585853725481"
+  Purpose  = "VPC Data EFE"
 }

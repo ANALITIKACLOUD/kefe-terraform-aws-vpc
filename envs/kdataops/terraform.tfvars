@@ -14,5 +14,5 @@ enable_s3_endpoint = true
 
 tags = {
   Account = "882705246437"
-  Purpose = "VPC module validation - KCLD sandbox"
+  Purpose = "VPC Data EFE"
 }

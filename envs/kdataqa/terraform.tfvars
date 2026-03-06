@@ -14,5 +14,5 @@ enable_s3_endpoint = true
 
 tags = {
   Account = "471112840515"
-  Purpose = "VPC module simulation - simulates EFE Data QA"
+  Purpose = "VPC Data EFE"
 }
