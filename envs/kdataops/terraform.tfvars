@@ -1,4 +1,4 @@
-prefix      = "kefe"
+prefix      = "efe"
 project     = "data"
 environment = "ops"
 
